@@ -11,3 +11,13 @@ import "channels"
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+import jQuery from "jquery"
+global.$ = global.jQuery = jQuery
+window.$ = window.jQuery = jQuery
+
+require("selectize")
+
+$(document).on("turbolinks:load", function() {
+  $(".selectize").selectize()
+})
