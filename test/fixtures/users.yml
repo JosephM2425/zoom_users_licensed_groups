@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id         :bigint           not null, primary key
+#  email      :string
+#  active     :boolean
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  email: MyString
+  active: false
+
+two:
+  email: MyString
+  active: false

@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: groups
+#
+#  id         :bigint           not null, primary key
+#  name       :string
+#  schedule   :time
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  name: MyString
+  schedule: 2021-05-22 23:57:47
+
+two:
+  name: MyString
+  schedule: 2021-05-22 23:57:47
