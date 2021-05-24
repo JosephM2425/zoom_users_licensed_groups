@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: %i[ show edit update destroy ]
+  before_action :set_group, only: %i[ show edit update destroy]
 
   # GET /groups or /groups.json
   def index
@@ -18,6 +18,46 @@ class GroupsController < ApplicationController
 
   # GET /groups/1/edit
   def edit
+    @users = User.all
+  end
+
+  def update_licenses
+    
+    @group = Group.find(params[:group_id])
+    
+    
+    api_key = Rails.application.credentials.zoom[:api_key]
+    api_secret = Rails.application.credentials.zoom[:api_secret]
+
+    payload = {
+      iss: api_key,
+      exp: 1.hour.from_now.to_i
+    }
+    
+    token = JWT.encode(payload, api_secret, "HS256", { typ: 'JWT' })
+
+    #@group.users.each do |user|
+    #  print user.email
+    #end
+
+    @group.users.each do |user|
+      url = URI("https://api.zoom.us/v2/users/#{user.email}")
+      https = Net::HTTP.new(url.host, url.port)
+      https.use_ssl = true
+
+      request = Net::HTTP::Patch.new(url)
+      request["content-type"] = "application/json"
+      request["authorization"] = "Bearer #{token}"
+      request.body = { "type": 1 }.to_json
+
+      response = https.request(request)
+      puts "response.read_body"
+      puts response.read_body
+    end
+    
+    
+    
+    
   end
 
   # POST /groups or /groups.json
