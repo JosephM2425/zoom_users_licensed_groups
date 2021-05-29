@@ -62,8 +62,8 @@ class GroupsController < ApplicationController
 
   def update_licenses
     @group = Group.find(params[:group_id])
-    api_key = Rails.application.credentials.zoom[:api_key]
-    api_secret = Rails.application.credentials.zoom[:api_secret]
+    api_key = Rails.application.credentials[:api_key]
+    api_secret = Rails.application.credentials[:api_secret]
 
     payload = {
       iss: api_key,
