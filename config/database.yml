@@ -79,6 +79,13 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+
+production:
+  adapter: postgresql
+  database: ulibre_app_production
+  pool: 5
+  timeout: 5000
+
 production:
   <<: *default
   database: ulibre_app_production
