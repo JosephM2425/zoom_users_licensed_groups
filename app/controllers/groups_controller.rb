@@ -4,8 +4,8 @@ class GroupsController < ApplicationController
   # GET /groups or /groups.json
   def index
     @groups = Group.all
-    api_key = Rails.application.credentials[:api_key]
-    api_secret = Rails.application.credentials[:api_secret]
+    api_key = Rails.application.credentials[:API_KEY]
+    api_secret = Rails.application.credentials[:API_SECRET]
 
     payload = {
       iss: api_key,
