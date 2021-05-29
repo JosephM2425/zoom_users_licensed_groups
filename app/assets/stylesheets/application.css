@@ -13,5 +13,5 @@
  *= require_tree .
  *= require_self
  */
- @import "selectize/dist/css/selectize";
- @import "selectize/dist/css/selectize.default";
+@import "selectize/dist/css/selectize.css";
+@import "selectize/dist/css/selectize.default";
