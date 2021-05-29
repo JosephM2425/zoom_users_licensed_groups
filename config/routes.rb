@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :admins
   resources :groups do 
     patch 'update_licenses', to: 'groups#update_licenses'
   end

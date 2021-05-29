@@ -4,6 +4,45 @@ class GroupsController < ApplicationController
   # GET /groups or /groups.json
   def index
     @groups = Group.all
+    api_key = Rails.application.credentials.zoom[:api_key]
+    api_secret = Rails.application.credentials.zoom[:api_secret]
+
+    payload = {
+      iss: api_key,
+      exp: 1.hour.from_now.to_i
+    }
+    
+    token = JWT.encode(payload, api_secret, "HS256", { typ: 'JWT' })
+
+    url = URI("https://api.zoom.us/v2/users?status=active&page_size=150")
+
+    https = Net::HTTP.new(url.host, url.port)
+    https.use_ssl = true
+    
+    request = Net::HTTP::Get.new(url)
+    request["authorization"] = "Bearer #{token}"
+    request["content-type"] = 'application/json'
+
+    response = https.request(request)
+    usersJson = JSON.parse(response.read_body)
+    
+    def countLicenses(usersJson)
+      count = 0 
+      usersJson["users"].each do |user|
+        if user["type"] == 2
+          count = count + 1
+        end
+      end
+
+      return count
+    end
+
+    users_with_license = countLicenses(usersJson)
+
+    licenses = 30
+
+    @licencias_restantes = licenses - users_with_license
+    
   end
 
   # GET /groups/1 or /groups/1.json
@@ -22,10 +61,7 @@ class GroupsController < ApplicationController
   end
 
   def update_licenses
-    
     @group = Group.find(params[:group_id])
-    
-    
     api_key = Rails.application.credentials.zoom[:api_key]
     api_secret = Rails.application.credentials.zoom[:api_secret]
 
@@ -36,23 +72,27 @@ class GroupsController < ApplicationController
     
     token = JWT.encode(payload, api_secret, "HS256", { typ: 'JWT' })
 
-    #@group.users.each do |user|
-    #  print user.email
-    #end
-
+    if params[:group][:actions].include? "put"
+      type_licensed = 2
+    else 
+      type_licensed = 1
+    end
+    #byebug
     @group.users.each do |user|
       url = URI("https://api.zoom.us/v2/users/#{user.email}")
       https = Net::HTTP.new(url.host, url.port)
       https.use_ssl = true
-
       request = Net::HTTP::Patch.new(url)
+      
+      
+
       request["content-type"] = "application/json"
       request["authorization"] = "Bearer #{token}"
-      request.body = { "type": 1 }.to_json
-
+      request.body = { "type": type_licensed }.to_json
       response = https.request(request)
-      puts "response.read_body"
-      puts response.read_body
+    end
+    respond_to do |format|
+      format.html { redirect_to @group, notice: "Group licenses succesfully updated"}
     end
     
     
@@ -105,6 +145,6 @@ class GroupsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def group_params
-      params.require(:group).permit(:name, :schedule, user_ids: [])
+      params.require(:group).permit(:name, :schedule, :actions, user_ids: [])
     end
 end

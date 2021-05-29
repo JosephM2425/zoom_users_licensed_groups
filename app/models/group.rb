@@ -11,4 +11,5 @@
 class Group < ApplicationRecord
     validates :name, :schedule, presence: true
     has_and_belongs_to_many :users
+    enum actions: [ :put, :remove ]
 end

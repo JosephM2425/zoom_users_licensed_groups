@@ -11,8 +11,13 @@
 </p>
 
 <p>
-  <%= link_to 'Update Licenses', group_update_licenses_path(@group), method: :patch %> 
+  <%= form_with model: @group, :url=>group_update_licenses_path(@group), :method => :patch  do |form| %>
+    <%= form.select :actions, [["Put Licenses", :put], ["Remove Licenses", :remove]], {}%>
+    <%= form.submit 'Update', class:"btn btn-success" %>
+  <% end %>
+  <%# link_to 'Update Licenses', group_update_licenses_path(@group), method: :patch %>
+   
 </p>
 
-<%= link_to 'Edit', edit_group_path(@group) %> 
+<%= link_to 'Edit', edit_group_path(@group)  %> 
 <%= link_to 'Back', groups_path %>
